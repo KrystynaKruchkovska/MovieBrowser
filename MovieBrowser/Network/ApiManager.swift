@@ -12,21 +12,17 @@ final class ApiManager {
         static let apiKey: String = "2f114110ffe01902960893bcac96de55"
     }
 
-    private let urlSession = URLSession.shared
-    private let decoder = JSONDecoder()
-
     func makeRequest<T: Codable>(request: ApiRequest, completion: @escaping (Result<T, Error>) -> Void) {
-        urlSession.dataTask(with: makeURLRequest(from: request)) { [weak self] data, _, error in
-            guard let self = self else {
-                completion(.failure(UnknownApiError()))
-                return
-            }
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+
+        URLSession.shared.dataTask(with: makeURLRequest(from: request)) {  data, _, error in
 
             if let error = error {
                 completion(.failure(error))
             } else if let data = data {
                 do {
-                    completion(.success(try self.decoder.decode(T.self, from: data)))
+                    completion(.success(try decoder.decode(T.self, from: data)))
                 } catch {
                     completion(.failure(error))
                 }

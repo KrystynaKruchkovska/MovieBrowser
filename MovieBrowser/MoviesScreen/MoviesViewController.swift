@@ -10,10 +10,10 @@ import UIKit
 final class MoviesViewController: UIViewController {
     
     let viewModel: MoviesViewModelProtocol
-    
+
     init(viewModel: MoviesViewModelProtocol) {
         self.viewModel = viewModel
-        super.init()
+        super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder: NSCoder) {
@@ -22,6 +22,7 @@ final class MoviesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewModel.getAllMovies()
     }
     // TODO: Implement it
 }
