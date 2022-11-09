@@ -13,9 +13,8 @@ class MovieCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         backgroundColor = .red
-        addSubview(vStackView)
+        addSubview(hStackView)
         setupConstraints()
-        
     }
     
     required init?(coder: NSCoder) {
@@ -33,7 +32,7 @@ class MovieCell: UITableViewCell {
         return label
     }()
     
-    private var publishingYearLabel: UILabel = {
+    private var releaseYearLabel: UILabel = {
         let label = UILabel()
         label.textColor = UIColor(named: Colors.defaultGray.rawValue)
 
@@ -48,16 +47,25 @@ class MovieCell: UITableViewCell {
     private var movieImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleToFill
+        imageView.contentMode = .scaleAspectFit
         imageView.layer.cornerRadius = DefaultCellLayout.cornerRadius
+        imageView.image = UIImage(named: "thumbnail.png")
         
         return imageView
     }()
     
     lazy private var vStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [movieNameLabel, publishingYearLabel, descriptionTextView])
+        let stackView = UIStackView(arrangedSubviews: [movieNameLabel, releaseYearLabel, descriptionTextView])
         stackView.axis = .vertical
+        stackView.spacing = 8
+        
+        return stackView
+    }()
+    
+    lazy private var hStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [movieImageView, vStackView])
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.spacing = 13
         return stackView
     }()
     
@@ -74,18 +82,22 @@ class MovieCell: UITableViewCell {
         return imageView
     }()
     
-    private func update(title: String) {
-        movieNameLabel.text = title
+    private func update(movie: MovieInfo) {
+        movieNameLabel.text = movie.title
+        releaseYearLabel.text = movie.releaseDate.extractYear
+        descriptionTextView.text = movie.overview
     }
 }
 
 extension MovieCell {
     func setupConstraints() {
         NSLayoutConstraint.activate([
-            vStackView.topAnchor.constraint(equalTo: self.topAnchor),
-            vStackView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            vStackView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            vStackView.trailingAnchor.constraint(equalTo: self.trailingAnchor),        ])
+            hStackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 16),
+            hStackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -16),
+            hStackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
+            hStackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
+            movieImageView.widthAnchor.constraint(equalToConstant: 118)
+        ])
     }
     
 
@@ -95,6 +107,6 @@ extension MovieCell: Providable {
     typealias ProvidedItem = MovieInfo
     
     func provide(_ item: ProvidedItem) {
-        update(title: item.originalTitle)
+        update(movie: item)
     }
 }

@@ -18,7 +18,9 @@ struct MovieInfo: Codable {
     let id: Int
     let originalLanguage, originalTitle, overview: String
     let popularity: Double
-    let posterPath, releaseDate, title: String
+    let posterPath, title: String
+    let releaseDate: Date
+            
 }
 
 extension MovieInfo: Hashable {
