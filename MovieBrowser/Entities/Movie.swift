@@ -10,14 +10,24 @@
 import Foundation
 
 struct Movie: Codable {
-    let id: Int
     let page: Int
     let results: [MovieInfo]
 }
 
 struct MovieInfo: Codable {
-    let description: String
-    let favoriteCount, id, itemCount: Int
-    let name: String
-    let posterPath: String?
+    let id: Int
+    let originalLanguage, originalTitle, overview: String
+    let popularity: Double
+    let posterPath, releaseDate, title: String
+}
+
+extension MovieInfo: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.id == rhs.id
+    }
+
 }

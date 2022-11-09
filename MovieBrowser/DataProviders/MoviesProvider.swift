@@ -11,7 +11,7 @@ import Foundation
 
 class MoviesProvider {
     func getMovies(for genre: String ,completion: @escaping (Result<Movie, Error>) -> Void) {
-        apiManager.makeRequest(request: ApiRequest(endpoint: .movies(genreId: genre))) { (response: Result<Movie, Error>) in
+        apiManager.makeRequest(request:  TheMovieDBEndpoint.movies(page: 1, genre: genre)) { (response: Result<Movie, Error>) in
             switch response {
             case let .success(response):
                 DispatchQueue.main.async {

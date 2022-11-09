@@ -8,11 +8,8 @@
 import Foundation
 
 final class ApiManager {
-    private enum Constants {
-        static let apiKey: String = "2f114110ffe01902960893bcac96de55"
-    }
 
-    func makeRequest<T: Codable>(request: ApiRequest, completion: @escaping (Result<T, Error>) -> Void) {
+    func makeRequest<T: Codable>(request: Endpoint, completion: @escaping (Result<T, Error>) -> Void) {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
 
@@ -32,11 +29,10 @@ final class ApiManager {
         }.resume()
     }
 
-    private func makeURLRequest(from apiRequest: ApiRequest) -> URLRequest {
-        URLRequest(url: apiRequest.baseURL
-            .appending(path: apiRequest.endpoint)
-            .appending(queryItems: [URLQueryItem(name: "api_key", value: Constants.apiKey)])
-            .appending(queryItems: apiRequest.params)
+    private func makeURLRequest(from endpoint: Endpoint) -> URLRequest {
+        URLRequest(url: endpoint.baseUrl
+            .appending(path: endpoint.path)
+            .appending(queryItems: endpoint.parameters)
         )
     }
 }

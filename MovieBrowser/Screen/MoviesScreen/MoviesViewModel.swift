@@ -10,15 +10,23 @@
 import Foundation
 
 protocol MoviesViewModelProtocol {
+    var didFetchMovies: ( ([MovieInfo]) -> Void )? { get set }
     func getAllMovies()
 }
 
 class MoviesViewModel: MoviesViewModelProtocol {
-    var movies = [MovieInfo]()
-    let currentGenre: String
+    private var movies = [MovieInfo]() {
+        didSet {
+            didFetchMovies?(movies)
+        }
+    }
+    private let currentGenre: String
     private let apiManager = ApiManager()
     private var moviesProvider: MoviesProvider
     
+    // Outputs
+    var didFetchMovies: ( ([MovieInfo]) -> Void )?
+
     init(currentGenre: String) {
         self.currentGenre = currentGenre
         moviesProvider = MoviesProvider(apiManager: apiManager)

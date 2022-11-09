@@ -91,10 +91,10 @@ final class GenresViewController: UIViewController {
 
 extension GenresViewController: UITableViewDelegate {
     func tableView(_: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let item = genres[indexPath.row]
-        let moviesVM = MoviesViewModel(currentGenre: String(item.id))
+        let genre = genres[indexPath.row].name
+        let moviesVM = MoviesViewModel(currentGenre: String(genre))
         let vc = MoviesViewController(viewModel: moviesVM)
-        vc.title = item.name
+        vc.title = genre
         navigationController?.pushViewController(vc, animated: true)
         print("Row \(indexPath.row) selected")
     }
