@@ -23,6 +23,7 @@ enum TheMovieDBEndpoint: Endpoint {
     case genre
     case movies(page:Int, genre: String)
     case movieDetails(id: Int)
+    case poster(path: String)
     
     var path: String {
         switch self {
@@ -33,10 +34,15 @@ enum TheMovieDBEndpoint: Endpoint {
         case .movieDetails(let id):
             //https://api.themoviedb.org/3/movie/718930?api_key=2f114110ffe01902960893bcac96de55
             return "/movie/\(id)"
+        case .poster(let path):
+            return path
         }
     }
 
     var baseUrl: URL {
+        if case .poster = self {
+            return URL(string: "https://image.tmdb.org/t/p/w500/")!
+        }
         return URL(string: "https://api.themoviedb.org/3/")!
     }
     

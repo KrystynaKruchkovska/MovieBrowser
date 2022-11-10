@@ -107,11 +107,19 @@ class MovieCell: UITableViewCell {
         return spacer
     }()
     
-    private func update(movie: MovieInfoViewModel) {
+    private func update(movie: MovieCellViewModel) {
         movieNameLabel.text = movie.title
         releaseYearLabel.text = movie.releaseDate.extractYear
         descriptionTextView.text = movie.overview
         durationInfo.text = movie.movieDuration
+        movie.getPosterImage { image in
+            guard let image = image else {
+                return
+            }
+            DispatchQueue.main.async {
+                self.movieImageView.image = image
+            }
+        }
     }
 }
 
@@ -130,7 +138,7 @@ extension MovieCell {
 }
 
 extension MovieCell: Providable {
-    typealias ProvidedItem = MovieInfoViewModel
+    typealias ProvidedItem = MovieCellViewModel
     
     func provide(_ item: ProvidedItem) {
         update(movie: item)

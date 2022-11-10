@@ -18,8 +18,12 @@ protocol MoviesProviderProtocol {
 
 protocol MovieDetailsProtocol {
     func getDetails(for movieId: Int, completion: @escaping (Result< MovieDetails, Error>) -> Void)
-    
 }
+
+protocol ImageProviderProtocol {
+    func getImageData(for imagePath: String, completion: @escaping (Result<Data, Error>) -> Void)
+}
+
 
 final class DataProvider: GenresProviderProtocol {
     func getGenres(completion: @escaping (Result<[Genre], Error>) -> Void) {
@@ -78,6 +82,18 @@ extension DataProvider: MovieDetailsProtocol {
     }
 }
 
+extension DataProvider: ImageProviderProtocol {
+    func getImageData(for imagePath: String, completion: @escaping (Result<Data, Error>) -> Void) {
+        apiManager.makeRequest(request: TheMovieDBEndpoint.poster(path: imagePath)) { result in
+            switch result {
+            case let .success(data):
+                completion(.success(data))
+            case let .failure(error):
+                completion(.failure(error))
+            }
+        }
+    }
+}
 private struct GenresResponse: Codable {
     let genres: [Genre]
 }

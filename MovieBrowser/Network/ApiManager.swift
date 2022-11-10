@@ -30,6 +30,18 @@ final class ApiManager {
         }.resume()
     }
 
+    func makeRequest(request: Endpoint, completion: @escaping (Result<Data, Error>) -> Void) {
+        URLSession.shared.dataTask(with: makeURLRequest(from: request)) {  data, _, error in
+            if let error = error {
+                completion(.failure(error))
+            } else if let data = data {
+                completion(.success(data))
+            } else {
+                completion(.failure(UnknownApiError()))
+            }
+        }.resume()
+    }
+
     private func makeURLRequest(from endpoint: Endpoint) -> URLRequest {
         URLRequest(url: endpoint.baseUrl
             .appending(path: endpoint.path)
