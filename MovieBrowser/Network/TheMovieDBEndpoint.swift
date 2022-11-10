@@ -11,7 +11,6 @@ protocol Endpoint {
     var baseUrl: URL { get }
     var path: String { get }
     var parameters: [URLQueryItem] { get }
-//    var method: String { get }
 }
 
 enum TheMovieDBEndpoint: Endpoint {
@@ -23,6 +22,7 @@ enum TheMovieDBEndpoint: Endpoint {
     
     case genre
     case movies(page:Int, genre: String)
+    case movieDetails(id: Int)
     
     var path: String {
         switch self {
@@ -30,6 +30,9 @@ enum TheMovieDBEndpoint: Endpoint {
             return "/genre/movie/list"
         case .movies(_,_):
             return "/discover/movie"
+        case .movieDetails(let id):
+            //https://api.themoviedb.org/3/movie/718930?api_key=2f114110ffe01902960893bcac96de55
+            return "/movie/\(id)"
         }
     }
 
@@ -50,20 +53,3 @@ enum TheMovieDBEndpoint: Endpoint {
         return queryItems
     }
 }
-//https://api.themoviedb.org/3/discover/movie?api_key=2f114110ffe01902960893bcac96de55&language=en-US&sort_by=popularity.desc&page=2&with_genres=Animation
-
-//struct ApiRequest {
-//    private enum Constants {
-//        static let defaultBaseURL: URL = URL(string: "https://api.themoviedb.org/3/")!
-//    }
-//
-//    let baseURL: URL
-//    let path: String
-//    let params: [URLQueryItem]
-//
-//    init(baseURL: URL = Constants.defaultBaseURL, endpoint: Endpoint, params: [URLQueryItem] = []) {
-//        self.baseURL = baseURL
-//        self.path = endpoint.path
-//        self.params = endpoint.params
-//    }
-//}

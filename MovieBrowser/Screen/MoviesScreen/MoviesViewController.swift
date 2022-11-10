@@ -14,6 +14,7 @@ final class MoviesViewController: UIViewController {
     
     private var tableView: UITableView = {
         let tableView = UITableView(frame: .zero)
+        tableView.separatorStyle = .none
         tableView.register(MovieCell.self, forCellReuseIdentifier: MovieCell.identifier)
         return tableView
     }()
@@ -50,10 +51,5 @@ extension MoviesViewController {
         viewModel.didFetchMovies = { [weak self] movies in
             self?.tableViewViewModel.add(movies)
         }
-//        viewModel.didUpdateRepos = { [weak self] repos in
-//            guard let strongSelf = self else { return }
-//            strongSelf.data = repos
-//            strongSelf.tableView.reloadData()
-//        }
     }
 }

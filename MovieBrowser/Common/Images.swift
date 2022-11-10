@@ -12,3 +12,7 @@ import Foundation
 enum SystemSymbols: String {
     case clockFill = "clock.fill"
 }
+
+enum ImageName: String {
+    case thumbnail = "thumbnail.png"
+}

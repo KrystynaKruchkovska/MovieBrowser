@@ -19,7 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
 
         let apiManager = ApiManager()
-        let genresProvider = GenresProvider(apiManager: apiManager)
+        let genresProvider: GenresProviderProtocol = DataProvider(apiManager: apiManager)
         let genresViewController = GenresViewController(genresProvider: genresProvider)
 
         window?.rootViewController = UINavigationController(rootViewController: genresViewController)

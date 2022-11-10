@@ -13,14 +13,14 @@ final class GenresViewController: UIViewController {
         static let title = "Genres"
     }
 
-    private let genresProvider: GenresProvider
+    private let genresProvider: GenresProviderProtocol
 
     private let tableView = UITableView()
     private let activityIndicator = UIActivityIndicatorView()
 
     private var genres = [Genre]()
 
-    init(genresProvider: GenresProvider) {
+    init(genresProvider: GenresProviderProtocol) {
         self.genresProvider = genresProvider
 
         super.init(nibName: nil, bundle: nil)

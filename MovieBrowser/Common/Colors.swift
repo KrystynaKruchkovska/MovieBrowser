@@ -11,5 +11,6 @@ import Foundation
 
 enum Colors: String {
     case defaultGray = "DefaultGray"
+    case cellBackground = "CellBackgroundColor"
     
 }
