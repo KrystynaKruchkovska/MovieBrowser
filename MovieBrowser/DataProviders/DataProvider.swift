@@ -13,7 +13,7 @@ protocol GenresProviderProtocol {
 }
 
 protocol MoviesProviderProtocol {
-    func getMovies(for genre: String ,completion: @escaping (Result<Movie, Error>) -> Void)
+    func getMovies(page: Int, for genre: String, completion: @escaping (Result<Movie, Error>) -> Void)
 }
 
 protocol MovieDetailsProtocol {
@@ -49,8 +49,8 @@ final class DataProvider: GenresProviderProtocol {
 }
 
 extension DataProvider: MoviesProviderProtocol {
-    func getMovies(for genre: String ,completion: @escaping (Result<Movie, Error>) -> Void) {
-        apiManager.makeRequest(request: TheMovieDBEndpoint.movies(page: 1, genre: genre)) { (response: Result<Movie, Error>) in
+    func getMovies(page: Int, for genre: String, completion: @escaping (Result<Movie, Error>) -> Void) {
+        apiManager.makeRequest(request: TheMovieDBEndpoint.movies(page: page, genre: genre)) { (response: Result<Movie, Error>) in
             switch response {
             case let .success(response):
                 DispatchQueue.main.async {

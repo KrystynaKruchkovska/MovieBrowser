@@ -18,11 +18,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         window = UIWindow(windowScene: windowScene)
 
-        let apiManager = ApiManager()
-        let genresProvider: GenresProviderProtocol = DataProvider(apiManager: apiManager)
-        let genresViewController = GenresViewController(genresProvider: genresProvider)
+        let sceneFactory = GenresFactory()
+        sceneFactory.configurator = GenresSceneConfirurator()
 
-        window?.rootViewController = UINavigationController(rootViewController: genresViewController)
+        window?.rootViewController = UINavigationController(rootViewController: sceneFactory.makeScene())
         window?.makeKeyAndVisible()
     }
 

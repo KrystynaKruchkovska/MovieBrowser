@@ -9,44 +9,52 @@
 
 import Foundation
 
-protocol MoviesViewModelProtocol {
-    var didFetchMovies: ( ([MovieCellViewModel]) -> Void )? { get set }
+protocol MoviesViewModelProtocol: AnyObject {
+    var didFetchMovies: ( (MovieCellViewModel) -> Void )? { get set }
     func getAllMovies()
 }
 
 class MoviesViewModel: MoviesViewModelProtocol {
-    private var movies = [MovieCellViewModel]() {
+    private var movie: MovieCellViewModel? {
         didSet {
-            didFetchMovies?(movies)
+            pageLoader.current += 1 
+            didFetchMovies?(movie!)
         }
     }
-    private let currentGenre: String
+    private var currentGenre: String
     private let apiManager = ApiManager()
     private var moviesProvider: MoviesProviderProtocol
     private var movieDetailsProvider: MovieDetailsProtocol
     private var imageDownloader: ImageDownloader
-    
+    private var pageLoader: PageLoader
     // Outputs
-    var didFetchMovies: ( ([MovieCellViewModel]) -> Void )?
+    var didFetchMovies: ( (MovieCellViewModel) -> Void )?
     
-    init(currentGenre: String) {
-        self.currentGenre = currentGenre
-        let dataProvider = DataProvider(apiManager: apiManager)
-        let imageCache = DefaultImageCache()
-        let imageDownloader = DefaultImageDownloader(imageProvider: dataProvider,
-                                                     imageCache: imageCache)
+    init(imageDownloader: ImageDownloader,
+         pageLoader: PageLoader,
+         moviesProvider: MoviesProviderProtocol,
+         detailsProvider: MovieDetailsProtocol,
+         currentGenreID: Int) {
+
+        self.pageLoader = pageLoader
         self.imageDownloader = imageDownloader
-        moviesProvider = dataProvider
-        movieDetailsProvider = dataProvider
+        self.moviesProvider = moviesProvider
+        self.movieDetailsProvider = detailsProvider
+        self.currentGenre = String(currentGenreID)
     }
     
     func getAllMovies() {
+        guard let page = pageLoader.pageToLoad else {
+            return
+        }
+        
         var moviesWithBaseInfo = [MovieInfo]()
         let group = DispatchGroup()
         
-        DispatchQueue.global(qos: .userInitiated).async { [self] in
+        
+        DispatchQueue.global(qos: .userInteractive).async { [self] in
             group.enter()
-            self.moviesProvider.getMovies(for: self.currentGenre) { result in
+            self.moviesProvider.getMovies(page: page, for: self.currentGenre) { result in
                 if case .failure(let error) = result {
                     print("Error: \(error)")
                 }
@@ -57,11 +65,18 @@ class MoviesViewModel: MoviesViewModelProtocol {
                 group.leave()
             }
             group.wait()
-            self.movies = moviesWithBaseInfo.compactMap { movieInfo in
+            
+            moviesWithBaseInfo.forEach { movieInfo in
+                if pageLoader.current == 50 {
+                    return
+                }
                 let movieId = movieInfo.id
-                var fullMovie: MovieCellViewModel? = nil
                 group.enter()
-                self.movieDetailsProvider.getDetails(for: movieId) { result in
+                self.movieDetailsProvider.getDetails(for: movieId) { [weak self] result in
+                    guard let self = self else {
+                        group.leave()
+                        return
+                    }
                     if case .failure(let error) = result {
                         print("Error: \(error)")
                         group.leave()
@@ -69,14 +84,26 @@ class MoviesViewModel: MoviesViewModelProtocol {
                     }
                     if case .success(let details) = result {
                         group.leave()
-                        fullMovie = MovieCellViewModel(baseMovieInfo: movieInfo, details: details, imageDownloader: imageDownloader)
+                        self.movie = MovieCellViewModel(baseMovieInfo: movieInfo, details: details, imageDownloader: self.imageDownloader)
                     }
                 }
                 group.wait()
-                
-                return fullMovie
             }
         }       
     }
 }
 
+class PageLoader {
+    var current: Int = 0
+    var pageToLoad: Int? {
+        return culculatePageForLoad()
+    }
+    
+    private func culculatePageForLoad() -> Int? {
+        if current > 50 {
+            return nil
+        }
+        return (current / 20) + 1
+    }
+    
+}

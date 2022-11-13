@@ -20,14 +20,12 @@ class TableViewDiffableDataSourceViewModel<CellType: UITableViewCell & Providabl
     private var dataSource: DataSource?
     private var cellIdentifier: String
     private weak var tableView: UITableView?
-//    weak var parentVC: UIViewController?
     
     public var items: Binding<[Item]> = .init([])
     
     init(tableView: UITableView, cellReuseIdentifier: String) {
         self.cellIdentifier = cellReuseIdentifier
         self.tableView = tableView
-//        self.parentVC = parentVC
         super.init()
     }
 }
@@ -52,7 +50,7 @@ extension TableViewDiffableDataSourceViewModel {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
         snapshot.appendSections([.main])
         snapshot.appendItems(items.value)
-        dataSource?.apply(snapshot)
+        dataSource?.apply(snapshot, animatingDifferences: tableView?.window != nil)
     }
     
     public func add(_ items: [Item]) {

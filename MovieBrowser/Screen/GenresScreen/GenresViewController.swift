@@ -13,29 +13,28 @@ final class GenresViewController: UIViewController {
         static let title = "Genres"
     }
 
-    private let genresProvider: GenresProviderProtocol
-
-    private let tableView = UITableView()
+    var viewModel: GenresViewModel?
+    private var genres = [Genre]()
     private let activityIndicator = UIActivityIndicatorView()
 
-    private var genres = [Genre]()
+    private var tableView: UITableView = {
+        let tableView = UITableView(frame: .zero)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: Constants.cellId)
+        return tableView
+    }()
+    
 
-    init(genresProvider: GenresProviderProtocol) {
-        self.genresProvider = genresProvider
-
-        super.init(nibName: nil, bundle: nil)
-    }
-
-    @available(*, unavailable)
-    required init?(coder _: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    
+    override func loadView() {
+        super.loadView()
+        self.view = tableView
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         prepareUI()
         getGenres()
+        setupViewModel()
     }
 
     private func prepareUI() {
@@ -49,18 +48,8 @@ final class GenresViewController: UIViewController {
     }
 
     private func prepareTableView() {
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor)
-        ])
-
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: Constants.cellId)
     }
 
     private func prepareActivityIndicator() {
@@ -75,28 +64,30 @@ final class GenresViewController: UIViewController {
 
     private func getGenres() {
         activityIndicator.startAnimating()
+        viewModel?.getAllGenres()
+    }
+    
+    private func showMoviesViewController(with genre: Genre ) {
+        let moviesScene = MoviesSceneFactory()
+        moviesScene.configurator = MovieSceneConfigurator(genre: genre)
+        let scene = moviesScene.makeScene()
+        navigationController?.pushViewController(scene, animated: true)
+    }
+}
 
-        genresProvider.getGenres { result in
-            switch result {
-            case let .success(genres):
-                self.genres = genres
-                self.tableView.reloadData()
-                self.activityIndicator.stopAnimating()
-            case let .failure(error):
-                print("Cannot get genres, reason: \(error)")
-            }
+extension GenresViewController {
+    func setupViewModel() {
+        viewModel?.didFetchGeners = { [weak self] generes in
+                self?.genres = generes
+                self?.tableView.reloadData()
+                self?.activityIndicator.stopAnimating()
         }
     }
 }
 
 extension GenresViewController: UITableViewDelegate {
     func tableView(_: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let genre = genres[indexPath.row].name
-        let moviesVM = MoviesViewModel(currentGenre: String(genre))
-        let vc = MoviesViewController(viewModel: moviesVM)
-        vc.title = genre
-        navigationController?.pushViewController(vc, animated: true)
-        print("Row \(indexPath.row) selected")
+        showMoviesViewController(with: genres[indexPath.row])
     }
 }
 

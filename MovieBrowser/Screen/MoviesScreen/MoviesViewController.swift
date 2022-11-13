@@ -9,8 +9,8 @@ import UIKit
 
 final class MoviesViewController: UIViewController {
     
-    private (set) var viewModel: MoviesViewModelProtocol
-    private let tableViewViewModel: MovieTableViewModel
+    var viewModel: MoviesViewModelProtocol?
+    private let moviesTableViewHandler: MoviesTableViewHandler
     
     private var tableView: UITableView = {
         let tableView = UITableView(frame: .zero)
@@ -23,9 +23,8 @@ final class MoviesViewController: UIViewController {
         self.view = tableView
     }
 
-    init(viewModel: MoviesViewModelProtocol) {
-        self.viewModel = viewModel
-        self.tableViewViewModel = MovieTableViewModel(tableView: self.tableView, cellReuseIdentifier: MovieCell.identifier)
+    init() {
+        self.moviesTableViewHandler = MoviesTableViewHandler(tableView: self.tableView, cellReuseIdentifier: MovieCell.identifier)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -35,7 +34,7 @@ final class MoviesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel.getAllMovies()
+        viewModel?.getAllMovies()
         setupTableView()
         setupViewModel()
     }
@@ -43,13 +42,16 @@ final class MoviesViewController: UIViewController {
 
 extension MoviesViewController {
     private func setupTableView(){
-        tableView.delegate = tableViewViewModel
-        tableView.dataSource = tableViewViewModel.makeDataSource()
+        tableView.delegate = moviesTableViewHandler
+        tableView.dataSource = moviesTableViewHandler.makeDataSource()
     }
 
     func setupViewModel() {
-        viewModel.didFetchMovies = { [weak self] movies in
-            self?.tableViewViewModel.add(movies)
+        viewModel?.didFetchMovies = { [weak self] movies in
+            self?.moviesTableViewHandler.add([movies])
+        }
+        moviesTableViewHandler.fetchMovies = { [weak self] in
+            self?.viewModel?.getAllMovies()
         }
     }
 }

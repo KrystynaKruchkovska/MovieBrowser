@@ -14,7 +14,7 @@ struct MovieCellViewModel {
     let originalLanguage, originalTitle, overview: String
     let popularity: Double
     let posterPath, title: String
-    let releaseDate: Date
+    let releaseDate: String
     let runtime: Int
     var imageDownloader: ImageDownloader?
 
@@ -67,5 +67,4 @@ extension MovieCellViewModel: Hashable {
     static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id
     }
-
 }

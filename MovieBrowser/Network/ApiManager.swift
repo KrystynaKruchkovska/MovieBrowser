@@ -12,7 +12,6 @@ final class ApiManager {
     func makeRequest<T: Codable>(request: Endpoint, completion: @escaping (Result<T, Error>) -> Void) {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        decoder.dateDecodingStrategy = .formatted(DateFormatter.yyyyMMdd)
         
         URLSession.shared.dataTask(with: makeURLRequest(from: request)) {  data, _, error in
 
@@ -22,7 +21,9 @@ final class ApiManager {
                 do {
                     completion(.success(try decoder.decode(T.self, from: data)))
                 } catch {
+                    print("ERROR: ", error)
                     completion(.failure(error))
+                    
                 }
             } else {
                 completion(.failure(UnknownApiError()))
