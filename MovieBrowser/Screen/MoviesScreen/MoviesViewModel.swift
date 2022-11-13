@@ -27,6 +27,8 @@ class MoviesViewModel: MoviesViewModelProtocol {
     private var movieDetailsProvider: MovieDetailsProtocol
     private var imageDownloader: ImageDownloader
     private var pageLoader: PageLoader
+    private var requestInProgress: Bool
+    
     // Outputs
     var didFetchMovies: ( (MovieCellViewModel) -> Void )?
     
@@ -41,6 +43,7 @@ class MoviesViewModel: MoviesViewModelProtocol {
         self.moviesProvider = moviesProvider
         self.movieDetailsProvider = detailsProvider
         self.currentGenre = String(currentGenreID)
+        self.requestInProgress = false
     }
     
     func getAllMovies() {
@@ -48,10 +51,15 @@ class MoviesViewModel: MoviesViewModelProtocol {
             return
         }
         
+        if self.requestInProgress {
+            return
+        }
+        
+        self.requestInProgress = true
+        
         var moviesWithBaseInfo = [MovieInfo]()
         let group = DispatchGroup()
-        
-        
+    
         DispatchQueue.global(qos: .userInteractive).async { [self] in
             group.enter()
             self.moviesProvider.getMovies(page: page, for: self.currentGenre) { result in
@@ -62,8 +70,10 @@ class MoviesViewModel: MoviesViewModelProtocol {
                 if case .success(let movies) = result {
                     moviesWithBaseInfo = movies.results
                 }
+                
                 group.leave()
             }
+            
             group.wait()
             
             moviesWithBaseInfo.forEach { movieInfo in
@@ -87,9 +97,12 @@ class MoviesViewModel: MoviesViewModelProtocol {
                         self.movie = MovieCellViewModel(baseMovieInfo: movieInfo, details: details, imageDownloader: self.imageDownloader)
                     }
                 }
+                
                 group.wait()
             }
-        }       
+            
+            self.requestInProgress = false
+        }
     }
 }
 
