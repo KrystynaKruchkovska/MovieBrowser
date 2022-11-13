@@ -25,7 +25,7 @@ final class MovieSceneConfigurator: SceneConfigurator {
         let imageProvider: ImageProviderProtocol = DataProvider(apiManager: apiManager)
         let imageCache = DefaultImageCache()
         
-        let pageLoader = PageLoader()
+        let pageLoader = PageLoader(itemsLimit: 50)
         let imageDownloader = DefaultImageDownloader(imageProvider: imageProvider, imageCache: imageCache)
         
         let moviesProvider:MoviesProviderProtocol = DataProvider(apiManager: apiManager)

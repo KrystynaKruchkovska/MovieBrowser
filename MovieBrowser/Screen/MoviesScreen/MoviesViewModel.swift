@@ -11,13 +11,13 @@ import Foundation
 
 protocol MoviesViewModelProtocol: AnyObject {
     var didFetchMovies: ( (MovieCellViewModel) -> Void )? { get set }
-    func getAllMovies()
+    func getMovies()
 }
 
 class MoviesViewModel: MoviesViewModelProtocol {
     private var movie: MovieCellViewModel? {
         didSet {
-            pageLoader.current += 1 
+            pageLoader.current += 1
             didFetchMovies?(movie!)
         }
     }
@@ -29,6 +29,7 @@ class MoviesViewModel: MoviesViewModelProtocol {
     private var pageLoader: PageLoader
     private var requestInProgress: Bool
     
+    
     // Outputs
     var didFetchMovies: ( (MovieCellViewModel) -> Void )?
     
@@ -37,7 +38,7 @@ class MoviesViewModel: MoviesViewModelProtocol {
          moviesProvider: MoviesProviderProtocol,
          detailsProvider: MovieDetailsProtocol,
          currentGenreID: Int) {
-
+        
         self.pageLoader = pageLoader
         self.imageDownloader = imageDownloader
         self.moviesProvider = moviesProvider
@@ -46,77 +47,80 @@ class MoviesViewModel: MoviesViewModelProtocol {
         self.requestInProgress = false
     }
     
-    func getAllMovies() {
-        guard let page = pageLoader.pageToLoad else {
-            return
-        }
+    func getMovies() {
         
         if self.requestInProgress {
             return
         }
-        
         self.requestInProgress = true
-        
-        var moviesWithBaseInfo = [MovieInfo]()
-        let group = DispatchGroup()
-    
+
         DispatchQueue.global(qos: .userInteractive).async { [self] in
-            group.enter()
-            self.moviesProvider.getMovies(page: page, for: self.currentGenre) { result in
+            getMoviesBaseInfo { result in
+                
                 if case .failure(let error) = result {
                     print("Error: \(error)")
                 }
                 
-                if case .success(let movies) = result {
-                    moviesWithBaseInfo = movies.results
+                if case .success(let moviesWithBaseInfo) = result {
+                    moviesWithBaseInfo.forEach { movieInfo in
+                        
+                        let movieId = movieInfo.id
+                        self.movieDetailsProvider.getDetails(for: movieId) { [weak self] result in
+                            guard let self = self else {
+                                return
+                            }
+                            if case .failure(let error) = result {
+                                print("Error: \(error)")
+                            }
+                            if case .success(let details) = result {
+                                if self.pageLoader.current < self.pageLoader.itemsLimit {
+                                    self.movie = MovieCellViewModel(baseMovieInfo: movieInfo, details: details, imageDownloader: self.imageDownloader)
+                                }
+                            }
+                        }
+                    }
                 }
-                
-                group.leave()
             }
-            
-            group.wait()
-            
-            moviesWithBaseInfo.forEach { movieInfo in
-                if pageLoader.current == 50 {
-                    return
-                }
-                let movieId = movieInfo.id
-                group.enter()
-                self.movieDetailsProvider.getDetails(for: movieId) { [weak self] result in
-                    guard let self = self else {
-                        group.leave()
-                        return
-                    }
-                    if case .failure(let error) = result {
-                        print("Error: \(error)")
-                        group.leave()
-
-                    }
-                    if case .success(let details) = result {
-                        group.leave()
-                        self.movie = MovieCellViewModel(baseMovieInfo: movieInfo, details: details, imageDownloader: self.imageDownloader)
-                    }
-                }
-                
-                group.wait()
-            }
-            
             self.requestInProgress = false
+        }
+    }
+    
+    private func getMoviesBaseInfo(completion: @escaping (Result< [MovieInfo], Error>) -> Void) {
+        var moviesWithBaseInfo = [MovieInfo]()
+        guard let page = pageLoader.pageToLoad else {
+            return
+        }
+        moviesProvider.discoverMovies(page: page, for: self.currentGenre) { result in
+            if case .failure(let error) = result {
+                completion(.failure(error))
+            }
+            
+            if case .success(let movies) = result {
+                moviesWithBaseInfo = movies.results
+                completion(.success(moviesWithBaseInfo))
+            }
         }
     }
 }
 
 class PageLoader {
+    let itemsPerRequest = 20
     var current: Int = 0
+    var itemsLimit: Int
+    
     var pageToLoad: Int? {
         return culculatePageForLoad()
     }
     
+    init(itemsLimit: Int) {
+        self.itemsLimit = itemsLimit
+    }
+    
     private func culculatePageForLoad() -> Int? {
-        if current > 50 {
+        if current == itemsLimit {
             return nil
         }
-        return (current / 20) + 1
+        return (current / itemsPerRequest) + 1
     }
     
 }

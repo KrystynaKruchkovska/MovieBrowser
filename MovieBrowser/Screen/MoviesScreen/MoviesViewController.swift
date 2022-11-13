@@ -34,7 +34,7 @@ final class MoviesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel?.getAllMovies()
+        viewModel?.getMovies()
         setupTableView()
         setupViewModel()
     }
@@ -51,7 +51,7 @@ extension MoviesViewController {
             self?.moviesTableViewHandler.add([movies])
         }
         moviesTableViewHandler.fetchMovies = { [weak self] in
-            self?.viewModel?.getAllMovies()
+            self?.viewModel?.getMovies()
         }
     }
 }
