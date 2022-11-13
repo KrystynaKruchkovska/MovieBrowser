@@ -10,6 +10,10 @@
 import UIKit
 
 class MoviesTableViewHandler: TableViewDiffableDataSourceViewModel<MovieCell> {
+    private enum Constants {
+        static let rowHeight: CGFloat = 219
+        static let distanceFromBottom = 10.0
+    }
     // Outputs
     var fetchMovies: ( () -> () )?
 
@@ -19,8 +23,7 @@ class MoviesTableViewHandler: TableViewDiffableDataSourceViewModel<MovieCell> {
         let currentOffset = scrollView.contentOffset.y
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
 
-        // Change 10.0 to adjust the distance from bottom
-        if maximumOffset - currentOffset <= 10.0 {
+        if maximumOffset - currentOffset <= Constants.distanceFromBottom {
             fetchMovies?()
         }
     }
@@ -28,6 +31,6 @@ class MoviesTableViewHandler: TableViewDiffableDataSourceViewModel<MovieCell> {
 
 extension MoviesTableViewHandler: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 219
+        return Constants.rowHeight
     }
 }
