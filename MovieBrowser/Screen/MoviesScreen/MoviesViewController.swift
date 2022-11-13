@@ -38,6 +38,7 @@ final class MoviesViewController: UIViewController {
         setupTableView()
         setupViewModel()
     }
+    
 }
 
 extension MoviesViewController {
@@ -46,7 +47,7 @@ extension MoviesViewController {
         tableView.dataSource = moviesTableViewHandler.makeDataSource()
     }
 
-    func setupViewModel() {
+    private func setupViewModel() {
         viewModel?.didFetchMovies = { [weak self] movies in
             self?.moviesTableViewHandler.add([movies])
         }

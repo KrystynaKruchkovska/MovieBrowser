@@ -17,11 +17,13 @@ extension String {
         guard let date = dateFormatter.date(from: self) else {
                 return ""
         }
+        
         let yearComponent = Calendar.current.dateComponents([.year], from: date)
         
         guard let year = yearComponent.year else {
             return ""
         }
+        
         return  Self(year)
     }
 }

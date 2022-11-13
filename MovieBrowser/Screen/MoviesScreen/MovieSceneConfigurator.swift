@@ -25,15 +25,17 @@ final class MovieSceneConfigurator: SceneConfigurator {
         let imageProvider: ImageProviderProtocol = DataProvider(apiManager: apiManager)
         let imageCache = DefaultImageCache()
         
+        let dataProvider = DataProvider(apiManager: apiManager)
+        
+        let moviesProvider:MoviesProviderProtocol = dataProvider
+        let movieDetailsProvider: MovieDetailsProtocol = dataProvider
+        
         let pageLoader = PageLoader(itemsLimit: 50)
         let imageDownloader = DefaultImageDownloader(imageProvider: imageProvider, imageCache: imageCache)
         
-        let moviesProvider:MoviesProviderProtocol = DataProvider(apiManager: apiManager)
-        
-        let movieDetailsProvider: MovieDetailsProtocol = DataProvider(apiManager: apiManager)
-        
         let viewModel: MoviesViewModelProtocol = MoviesViewModel(imageDownloader: imageDownloader, pageLoader: pageLoader, moviesProvider: moviesProvider, detailsProvider: movieDetailsProvider, currentGenreID: genre.id)
         vc.viewModel = viewModel
+        vc.title = genre.name
         
         return vc as! T
 

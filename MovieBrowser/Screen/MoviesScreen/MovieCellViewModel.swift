@@ -42,9 +42,9 @@ extension MovieCellViewModel {
     }
     
     func culculateMovieDuration(runtime: Int) -> String {
-        let hour: Int = runtime / 60
-        let min = runtime - (hour * 60)
-        return hour > 1 ? "\(hour)h \(min)m" : "\(min)m"
+        let hours: Int = runtime / 60
+        let mins = runtime - (hours * 60)
+        return hours > 1 ? "\(hours)h \(mins)m" : "\(mins)m"
     }
     
     func getPosterImage(completion: @escaping (UIImage?) -> ()) {

@@ -13,12 +13,6 @@ protocol SceneConfigurator {
     func configured<T: UIViewController>(_ vc: T) -> T
 }
 
-//extension SceneConfigurator {
-//    var dependencyProvider: DependencyProvider {
-//        return DefaultDependencyProvider()
-//    }
-//}
-
 protocol SceneFactory: AnyObject {
     var configurator: SceneConfigurator! { get set }
     func makeScene<T: UIViewController>() -> T

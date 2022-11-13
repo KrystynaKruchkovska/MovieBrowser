@@ -70,13 +70,13 @@ extension DataProvider: MovieDetailsProtocol {
         apiManager.makeRequest(request: TheMovieDBEndpoint.movieDetails(id: movieId)) { (response: Result<MovieDetails, Error>) in
             switch response {
             case let .success(response):
-                DispatchQueue.main.async {
+//                DispatchQueue.main.async {
                     completion(.success(response))
-                }
+//                }
             case let .failure(error) :
-                DispatchQueue.main.async {
+//                DispatchQueue.main.async {
                     completion(.failure(error))
-                }
+//                }
             }
         }
     }
@@ -94,6 +94,7 @@ extension DataProvider: ImageProviderProtocol {
         }
     }
 }
+
 private struct GenresResponse: Codable {
     let genres: [Genre]
 }

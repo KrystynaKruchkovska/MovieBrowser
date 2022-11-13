@@ -11,7 +11,6 @@ import Foundation
 
 class GenresViewModel {
     
-    
     private var genresProvider: GenresProviderProtocol?
     private var genres: [Genre]? {
         didSet {
