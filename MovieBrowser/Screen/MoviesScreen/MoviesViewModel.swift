@@ -12,7 +12,7 @@ import Foundation
 protocol MoviesViewModelProtocol: AnyObject {
     var didFetchMovie: ( (MovieCellViewModel) -> Void )? { get set }
     var onError: ((Error) -> Void)? { get set }
-    func getMovies()
+    func getMovies(completion: @escaping ()->())
     var requestInProgress: Bool { get }
 
 }
@@ -45,19 +45,27 @@ final class MoviesViewModel: MoviesViewModelProtocol {
         self.requestInProgress = false
     }
     
-    func getMovies() {
+    func getMovies(completion: @escaping ()->()) {
         let serialQueue = DispatchQueue(label: "serial.queue")
         serialQueue.sync { [self] in
             
             print("REQUEST requestInProgress \(requestInProgress)")
             if self.requestInProgress {
+                completion()
                 return
             }
             
             self.requestInProgress = true
-            getMoviesBaseInfo { result in
+            
+            guard let page = pageLoader.pageToLoad else {
+                completion()
+                return
+            }
+            
+            getMoviesBaseInfo(for: page) { result in
                 if case .failure(let error) = result {
                     DispatchQueue.main.async {
+                        completion()
                         self.onError?(error)
                     }
                 }
@@ -88,6 +96,7 @@ final class MoviesViewModel: MoviesViewModelProtocol {
                             }
                         }
                         print("AFTER |||")
+                        completion()
                         self.requestInProgress = false
                     }
                 }
@@ -95,12 +104,10 @@ final class MoviesViewModel: MoviesViewModelProtocol {
         }
     }
     
-    private func getMoviesBaseInfo(completion: @escaping (Result< [MovieInfo], Error>) -> Void) {
+    private func getMoviesBaseInfo(for page: Int, completion: @escaping (Result< [MovieInfo], Error>) -> Void) {
         var moviesWithBaseInfo = [MovieInfo]()
         
-        guard let page = pageLoader.pageToLoad else {
-            return
-        }
+
         
         moviesProvider.discoverMovies(page: page, for: self.currentGenre) { result in
             self.requestInProgress = false

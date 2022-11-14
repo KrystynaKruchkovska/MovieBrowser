@@ -32,9 +32,12 @@ final class MoviesViewController: UIViewController {
     }
     
     private func getMovies() {
-        viewModel?.getMovies()
         customView.progressIndicator.startAnimating()
-   
+        
+        viewModel?.getMovies(completion: { [weak self] in
+            print("HERE COMPLETION: ")
+            self?.customView.progressIndicator.stopAnimating()
+        })
     }
 }
 
@@ -47,7 +50,6 @@ extension MoviesViewController {
     private func setupViewModel() {
         viewModel?.didFetchMovie = { [weak self] movies in
             self?.moviesTableViewHandler.add([movies])
-            self?.customView.progressIndicator.stopAnimating()
         }
         viewModel?.onError = { [unowned self] error in
             infoAlert.show(on: self, message: error.localizedDescription, acceptanceCompletion: nil)
