@@ -20,9 +20,18 @@ final class MovieBrowserTests: XCTestCase {
 
     func testCulculateMovieDuration() throws {
         
-        let movieDuration = MovieCellViewModel.culculateMovieDuration(runtime: 127)
+        let testCases = [127, 10, 0, -50, 20_000]
+        let expectedResults = ["2h 7m","10m","0m", "0m", "333h 20m"]
         
-        XCTAssertEqual(movieDuration, "2h 7m", "Should return 2h 7m")
+    
+        for i in 0...testCases.count-1 {
+            let testCase = testCases[i]
+            let expectedResult = expectedResults[i]
+            let actualResult = MovieCellViewModel.culculateMovieDuration(runtime: testCase)
+            
+            XCTAssertEqual(actualResult, expectedResult, "Invalid calculation")
+        }
+        
     }
 
     func testPerformanceExample() throws {

@@ -35,7 +35,6 @@ final class MoviesViewController: UIViewController {
         customView.progressIndicator.startAnimating()
         
         viewModel?.getMovies(completion: { [weak self] in
-            print("HERE COMPLETION: ")
             self?.customView.progressIndicator.stopAnimating()
         })
     }

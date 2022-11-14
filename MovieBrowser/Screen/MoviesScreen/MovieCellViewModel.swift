@@ -42,6 +42,9 @@ extension MovieCellViewModel {
     }
     
     static func culculateMovieDuration(runtime: Int) -> String {
+        if runtime <= 0 {
+            return "0m"
+        }
         let hours: Int = runtime / 60
         let mins = runtime - (hours * 60)
         return hours > 1 ? "\(hours)h \(mins)m" : "\(mins)m"

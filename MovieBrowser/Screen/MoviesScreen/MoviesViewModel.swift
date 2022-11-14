@@ -14,7 +14,7 @@ protocol MoviesViewModelProtocol: AnyObject {
     var onError: ((Error) -> Void)? { get set }
     func getMovies(completion: @escaping ()->())
     var requestInProgress: Bool { get }
-
+    
 }
 
 final class MoviesViewModel: MoviesViewModelProtocol {
@@ -46,60 +46,54 @@ final class MoviesViewModel: MoviesViewModelProtocol {
     }
     
     func getMovies(completion: @escaping ()->()) {
-        let serialQueue = DispatchQueue(label: "serial.queue")
-        serialQueue.sync { [self] in
-            
-            print("REQUEST requestInProgress \(requestInProgress)")
-            if self.requestInProgress {
-                completion()
-                return
-            }
-            
-            self.requestInProgress = true
-            
-            guard let page = pageLoader.pageToLoad else {
-                completion()
-                return
-            }
-            
-            getMoviesBaseInfo(for: page) { result in
-                if case .failure(let error) = result {
-                    DispatchQueue.main.async {
-                        completion()
-                        self.onError?(error)
-                    }
+        if self.requestInProgress {
+            completion()
+            return
+        }
+        
+        self.requestInProgress = true
+        
+        guard let page = pageLoader.pageToLoad else {
+            completion()
+            return
+        }
+        
+        getMoviesBaseInfo(for: page) { result in
+            if case .failure(let error) = result {
+                DispatchQueue.main.async {
+                    completion()
+                    self.onError?(error)
                 }
-                if case .success(let moviesWithBaseInfo) = result {
-                    let serialQueue2 = DispatchQueue(label: "serial.queue2")
-                    serialQueue2.sync {
-                        var current = 0
-                        moviesWithBaseInfo.forEach { movieInfo in
-                            print("|||")
-                            let movieId = movieInfo.id
-                              current += 1
-
-                            self.movieDetailsProvider.getDetails(for: movieId) { [unowned self] result in
-
-                                if case .failure(let error) = result {
-                                    DispatchQueue.main.async {
-                                        self.onError?(error)
-                                    }
-                                }
-                                
-                                if case .success(let details) = result {
-                                    DispatchQueue.main.async {
-                                        if current < self.pageLoader.itemsLimit {
-                                            self.publishMovie(with: movieInfo, details: details)
-                                        }
-                                    }
+            }
+            if case .success(let moviesWithBaseInfo) = result {
+                var current = 0
+                moviesWithBaseInfo.forEach { movieInfo in
+                    let movieId = movieInfo.id
+                    current += 1
+                    
+                    self.movieDetailsProvider.getDetails(for: movieId) { [weak self] result in
+                        
+                        guard let self = self else {
+                            completion()
+                            return
+                        }
+                        if case .failure(let error) = result {
+                            DispatchQueue.main.async {
+                                self.onError?(error)
+                            }
+                        }
+                        
+                        if case .success(let details) = result {
+                            DispatchQueue.main.async {
+                                if current < self.pageLoader.itemsLimit {
+                                    self.publishMovie(with: movieInfo, details: details)
                                 }
                             }
                         }
-                        print("AFTER |||")
-                        completion()
-                        self.requestInProgress = false
                     }
                 }
+                completion()
+                self.requestInProgress = false
             }
         }
     }
@@ -107,11 +101,11 @@ final class MoviesViewModel: MoviesViewModelProtocol {
     private func getMoviesBaseInfo(for page: Int, completion: @escaping (Result< [MovieInfo], Error>) -> Void) {
         var moviesWithBaseInfo = [MovieInfo]()
         
-
+        
         
         moviesProvider.discoverMovies(page: page, for: self.currentGenre) { result in
             self.requestInProgress = false
-
+            
             if case .failure(let error) = result {
                 completion(.failure(error))
             }
@@ -124,7 +118,7 @@ final class MoviesViewModel: MoviesViewModelProtocol {
     }
     
     private func publishMovie(with movieInfo: MovieInfo, details: MovieDetails) {
-
+        
         let movie = MovieCellViewModel(baseMovieInfo: movieInfo, details: details, imageDownloader: imageDownloader)
         
         self.didFetchMovie?(movie)
@@ -133,13 +127,10 @@ final class MoviesViewModel: MoviesViewModelProtocol {
 
 class PageLoader {
     let itemsPerRequest = 20
-//    var current: Int = 0
     var itemsLimit: Int
     var lastLoadedPage: Int = 0
     var pageToLoad: Int? {
         let result = culculatePageForLoad()
-        print("PAGE to load \(String(describing: result))")
-        print("Thread\(Thread.current)")
         return result
     }
     
@@ -148,7 +139,6 @@ class PageLoader {
     }
     
     private func culculatePageForLoad() -> Int? {
-//        print("Current \(current)")
         if (lastLoadedPage * itemsPerRequest) > itemsLimit  {
             return nil
         }
