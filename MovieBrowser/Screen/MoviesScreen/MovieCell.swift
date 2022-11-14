@@ -10,6 +10,9 @@ import UIKit
 
 final class MovieCell: UITableViewCell {
     
+    private var imageDowloadingID: UUID?
+    private var viewModel: MovieCellViewModel?
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupContentView()
@@ -26,7 +29,11 @@ final class MovieCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        self.movieImageView.image = nil
+        self.movieImageView.image = UIImage(named: ImageName.thumbnail.rawValue)
+        guard let imageDowloadingID = imageDowloadingID else {
+            return
+        }
+        self.viewModel?.cancelImageDownloading(for: imageDowloadingID)
     }
     
     override func layoutSubviews() {
@@ -99,7 +106,7 @@ final class MovieCell: UITableViewCell {
     }()
     
     private var clockIcon: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "clock"))
+        let imageView = UIImageView(image: UIImage(named: ImageName.clock.rawValue))
         imageView.contentMode = .scaleAspectFit
         
         imageView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
@@ -114,11 +121,12 @@ final class MovieCell: UITableViewCell {
     }()
     
     private func update(movie: MovieCellViewModel) {
+        viewModel = movie
         movieTitleLabel.text = movie.title
         releaseYearLabel.text = movie.releaseDate.extractYear
         descriptionTextView.text = movie.overview
         durationInfo.text = movie.movieDuration
-        movie.getPosterImage { image in
+        imageDowloadingID = movie.getPosterImage { image in
             guard let image = image else {
                 return
             }
@@ -128,6 +136,17 @@ final class MovieCell: UITableViewCell {
                 self.movieImageView.fadeIn()
             }
         }
+    }
+    
+    private enum ImageName: String {
+        case thumbnail = "thumbnail.png"
+        case clock = "clock"
+    }
+    
+    private enum Colors: String {
+        case defaultGray = "DefaultGray"
+        case cellBackground = "CellBackgroundColor"
+        case cellShadow = "CellShadowColor"
     }
 }
 

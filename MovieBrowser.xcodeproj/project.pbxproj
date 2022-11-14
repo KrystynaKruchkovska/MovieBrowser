@@ -11,9 +11,6 @@
 		E51563C2291AA7F200F723BE /* Movie.swift in Sources */ = {isa = PBXBuildFile; fileRef = E51563C1291AA7F200F723BE /* Movie.swift */; };
 		E51563C4291ABDC600F723BE /* MovieCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E51563C3291ABDC600F723BE /* MovieCell.swift */; };
 		E51563C6291ABE4200F723BE /* ProvidableProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E51563C5291ABE4200F723BE /* ProvidableProtocol.swift */; };
-		E51563C9291AC0E500F723BE /* DefaultCellLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = E51563C8291AC0E500F723BE /* DefaultCellLayout.swift */; };
-		E51563CB291AC31300F723BE /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E51563CA291AC31300F723BE /* Colors.swift */; };
-		E51563CD291AC82F00F723BE /* Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = E51563CC291AC82F00F723BE /* Images.swift */; };
 		E51563CF291AC92700F723BE /* TableViewDiffableDataSourceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E51563CE291AC92700F723BE /* TableViewDiffableDataSourceViewModel.swift */; };
 		E51563D1291ACA3000F723BE /* Binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = E51563D0291ACA3000F723BE /* Binding.swift */; };
 		E51563D3291ACCAF00F723BE /* MoviesTableViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = E51563D2291ACCAF00F723BE /* MoviesTableViewHandler.swift */; };
@@ -28,6 +25,7 @@
 		E5D89E64291E7BF90087D932 /* MovieSceneConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5D89E63291E7BF90087D932 /* MovieSceneConfigurator.swift */; };
 		E5D89E66291E89390087D932 /* GenresViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5D89E65291E89390087D932 /* GenresViewModel.swift */; };
 		E5D89E68291FC9FB0087D932 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5D89E67291FC9FB0087D932 /* UIView+Extension.swift */; };
+		E5D89E6A292152CD0087D932 /* UINavigationBar+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5D89E69292152CD0087D932 /* UINavigationBar+Extension.swift */; };
 		F9A76D3E2915356B006636D2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A76D3D2915356B006636D2 /* AppDelegate.swift */; };
 		F9A76D402915356B006636D2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A76D3F2915356B006636D2 /* SceneDelegate.swift */; };
 		F9A76D422915356B006636D2 /* GenresViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A76D412915356B006636D2 /* GenresViewController.swift */; };
@@ -56,9 +54,6 @@
 		E51563C1291AA7F200F723BE /* Movie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Movie.swift; sourceTree = "<group>"; };
 		E51563C3291ABDC600F723BE /* MovieCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCell.swift; sourceTree = "<group>"; };
 		E51563C5291ABE4200F723BE /* ProvidableProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProvidableProtocol.swift; sourceTree = "<group>"; };
-		E51563C8291AC0E500F723BE /* DefaultCellLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultCellLayout.swift; sourceTree = "<group>"; };
-		E51563CA291AC31300F723BE /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
-		E51563CC291AC82F00F723BE /* Images.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Images.swift; sourceTree = "<group>"; };
 		E51563CE291AC92700F723BE /* TableViewDiffableDataSourceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewDiffableDataSourceViewModel.swift; sourceTree = "<group>"; };
 		E51563D0291ACA3000F723BE /* Binding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Binding.swift; sourceTree = "<group>"; };
 		E51563D2291ACCAF00F723BE /* MoviesTableViewHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesTableViewHandler.swift; sourceTree = "<group>"; };
@@ -73,6 +68,7 @@
 		E5D89E63291E7BF90087D932 /* MovieSceneConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieSceneConfigurator.swift; sourceTree = "<group>"; };
 		E5D89E65291E89390087D932 /* GenresViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenresViewModel.swift; sourceTree = "<group>"; };
 		E5D89E67291FC9FB0087D932 /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
+		E5D89E69292152CD0087D932 /* UINavigationBar+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationBar+Extension.swift"; sourceTree = "<group>"; };
 		F9A76D3A2915356B006636D2 /* MovieBrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieBrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9A76D3D2915356B006636D2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F9A76D3F2915356B006636D2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -136,9 +132,6 @@
 				E5D89E5D291E75EC0087D932 /* Factory */,
 				E51563D5291BA45D00F723BE /* Extension */,
 				E51563D4291ACE0100F723BE /* TableView */,
-				E51563C8291AC0E500F723BE /* DefaultCellLayout.swift */,
-				E51563CA291AC31300F723BE /* Colors.swift */,
-				E51563CC291AC82F00F723BE /* Images.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -158,6 +151,7 @@
 			children = (
 				E51563D6291BA4AA00F723BE /* String+Extension.swift */,
 				E5D89E67291FC9FB0087D932 /* UIView+Extension.swift */,
+				E5D89E69292152CD0087D932 /* UINavigationBar+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -365,7 +359,6 @@
 				F9CDCEA529155DF9005D9847 /* Genre.swift in Sources */,
 				E589543D291D3ED800E613B4 /* ImageDownloader.swift in Sources */,
 				E5D89E66291E89390087D932 /* GenresViewModel.swift in Sources */,
-				E51563C9291AC0E500F723BE /* DefaultCellLayout.swift in Sources */,
 				E51563C2291AA7F200F723BE /* Movie.swift in Sources */,
 				F9A76D422915356B006636D2 /* GenresViewController.swift in Sources */,
 				F9A76D3E2915356B006636D2 /* AppDelegate.swift in Sources */,
@@ -374,7 +367,6 @@
 				E51563DB291BE4F000F723BE /* DataProvider.swift in Sources */,
 				E51563DD291BE5CC00F723BE /* MovieDetails.swift in Sources */,
 				E5D89E64291E7BF90087D932 /* MovieSceneConfigurator.swift in Sources */,
-				E51563CB291AC31300F723BE /* Colors.swift in Sources */,
 				E51563D1291ACA3000F723BE /* Binding.swift in Sources */,
 				E5895441291D476000E613B4 /* MovieCellViewModel.swift in Sources */,
 				F9CDCEA229155DCE005D9847 /* UnknownApiError.swift in Sources */,
@@ -385,10 +377,10 @@
 				E51563BE291A9C4700F723BE /* MoviesViewModel.swift in Sources */,
 				E5D89E5F291E76010087D932 /* SceneFactory.swift in Sources */,
 				E589543F291D3FCF00E613B4 /* ImageCache.swift in Sources */,
+				E5D89E6A292152CD0087D932 /* UINavigationBar+Extension.swift in Sources */,
 				E51563CF291AC92700F723BE /* TableViewDiffableDataSourceViewModel.swift in Sources */,
 				E51563D3291ACCAF00F723BE /* MoviesTableViewHandler.swift in Sources */,
 				E51563C6291ABE4200F723BE /* ProvidableProtocol.swift in Sources */,
-				E51563CD291AC82F00F723BE /* Images.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -597,9 +589,9 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QVDGR7S7FA;
+				DEVELOPMENT_TEAM = V8ZG3WLBMM;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lakecoloring.MovieBrowserTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -617,9 +609,9 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QVDGR7S7FA;
+				DEVELOPMENT_TEAM = V8ZG3WLBMM;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lakecoloring.MovieBrowserTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -9,13 +9,14 @@
 import UIKit
 
 protocol ImageDownloader: AnyObject {
-    func download(with path: String, completion: @escaping (Result<UIImage, Error>) -> Void)
+    func download(with path: String, completion: @escaping (Result<UIImage, Error>) -> Void) -> UUID
+    func cancelTask(for UUID: UUID)
 }
 
 
 final class DefaultImageDownloader: ImageDownloader {
 
-//    private var runningRequests = [UUID: URLSessionDataTask]()
+    private var runningRequests = [UUID: URLSessionDataTask]()
     private let imageProvider: ImageProviderProtocol
     private let imageCache: ImageCache
 
@@ -25,13 +26,15 @@ final class DefaultImageDownloader: ImageDownloader {
         self.imageCache = imageCache
     }
 
-    func download(with path: String, completion: @escaping (Result<UIImage, Error>) -> Void)  {
+    func download(with path: String, completion: @escaping (Result<UIImage, Error>) -> Void) -> UUID  {
         if let image = imageCache.getImage(for: path) {
            completion(.success(image))
         }
         let uuid = UUID()
         
-        imageProvider.getImageData(for: path) { [weak self] result in
+        let task = imageProvider.getImageData(for: path) { [weak self] result in
+            
+            defer { self?.runningRequests.removeValue(forKey: uuid) }
             switch result {
             case .success(let data):
                 guard let image = UIImage(data: data) else {
@@ -43,11 +46,12 @@ final class DefaultImageDownloader: ImageDownloader {
                 completion(.failure(error))
             }
         }
+        runningRequests[uuid] = task
+        return uuid
     }
 
-//    /// - SeeAlso: `ImageDownloader.cancelTask`
-//    func cancelTask(for UUID: UUID) {
-//        runningRequests[UUID]?.cancel()
-//        runningRequests.removeValue(forKey: UUID)
-//    }
+    func cancelTask(for UUID: UUID) {
+        runningRequests[UUID]?.cancel()
+        runningRequests.removeValue(forKey: UUID)
+    }
 }

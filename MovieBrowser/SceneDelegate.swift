@@ -20,8 +20,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         let sceneFactory = GenresFactory()
         sceneFactory.configurator = GenresSceneConfirurator()
-
-        window?.rootViewController = UINavigationController(rootViewController: sceneFactory.makeScene())
+        let navController = UINavigationController(rootViewController: sceneFactory.makeScene())
+        navController.navigationBar.setAppStyle()
+        window?.rootViewController = navController
         window?.makeKeyAndVisible()
     }
 

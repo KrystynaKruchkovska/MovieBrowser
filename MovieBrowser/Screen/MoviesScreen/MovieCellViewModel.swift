@@ -16,10 +16,10 @@ struct MovieCellViewModel {
     let posterPath, title: String
     let releaseDate: String
     let runtime: Int
-    var imageDownloader: ImageDownloader?
+    private let imageDownloader: ImageDownloader?
 
     var movieDuration: String {
-        return culculateMovieDuration(runtime: runtime)
+        return MovieCellViewModel.culculateMovieDuration(runtime: runtime)
     }
 }
 
@@ -41,14 +41,14 @@ extension MovieCellViewModel {
         self.imageDownloader = imageDownloader
     }
     
-    func culculateMovieDuration(runtime: Int) -> String {
+    static func culculateMovieDuration(runtime: Int) -> String {
         let hours: Int = runtime / 60
         let mins = runtime - (hours * 60)
         return hours > 1 ? "\(hours)h \(mins)m" : "\(mins)m"
     }
     
-    func getPosterImage(completion: @escaping (UIImage?) -> ()) {
-        imageDownloader?.download(with: posterPath, completion: { result in
+    func getPosterImage(completion: @escaping (UIImage?) -> ()) -> UUID? {
+        return imageDownloader?.download(with: posterPath, completion: { result in
             switch result {
             case .success(let image):
                 completion(image)
@@ -56,6 +56,10 @@ extension MovieCellViewModel {
                 completion(nil)
             }
         })
+    }
+    
+    func cancelImageDownloading(for uuid: UUID) {
+        imageDownloader?.cancelTask(for: uuid)
     }
 }
 

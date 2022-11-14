@@ -21,7 +21,7 @@ protocol MovieDetailsProtocol {
 }
 
 protocol ImageProviderProtocol {
-    func getImageData(for imagePath: String, completion: @escaping (Result<Data, Error>) -> Void)
+    func getImageData(for imagePath: String, completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionDataTask
 }
 
 
@@ -70,21 +70,17 @@ extension DataProvider: MovieDetailsProtocol {
         apiManager.makeRequest(request: TheMovieDBEndpoint.movieDetails(id: movieId)) { (response: Result<MovieDetails, Error>) in
             switch response {
             case let .success(response):
-//                DispatchQueue.main.async {
                     completion(.success(response))
-//                }
             case let .failure(error) :
-//                DispatchQueue.main.async {
                     completion(.failure(error))
-//                }
             }
         }
     }
 }
 
 extension DataProvider: ImageProviderProtocol {
-    func getImageData(for imagePath: String, completion: @escaping (Result<Data, Error>) -> Void) {
-        apiManager.makeRequest(request: TheMovieDBEndpoint.poster(path: imagePath)) { result in
+    func getImageData(for imagePath: String, completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionDataTask {
+        var task = apiManager.makeRequest(request: TheMovieDBEndpoint.poster(path: imagePath)) { result in
             switch result {
             case let .success(data):
                 completion(.success(data))
@@ -92,6 +88,7 @@ extension DataProvider: ImageProviderProtocol {
                 completion(.failure(error))
             }
         }
+        return task
     }
 }
 
