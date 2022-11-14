@@ -32,7 +32,6 @@ enum TheMovieDBEndpoint: Endpoint {
         case .movies(_,_):
             return "/discover/movie"
         case .movieDetails(let id):
-            //https://api.themoviedb.org/3/movie/718930?api_key=2f114110ffe01902960893bcac96de55
             return "/movie/\(id)"
         case .poster(let path):
             return path

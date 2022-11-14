@@ -26,6 +26,8 @@
 		E5D89E66291E89390087D932 /* GenresViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5D89E65291E89390087D932 /* GenresViewModel.swift */; };
 		E5D89E68291FC9FB0087D932 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5D89E67291FC9FB0087D932 /* UIView+Extension.swift */; };
 		E5D89E6A292152CD0087D932 /* UINavigationBar+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5D89E69292152CD0087D932 /* UINavigationBar+Extension.swift */; };
+		E5D89E6D292244040087D932 /* InfoAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5D89E6C292244040087D932 /* InfoAlert.swift */; };
+		E5D89E6F29227C1E0087D932 /* MoviesListsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5D89E6E29227C1E0087D932 /* MoviesListsView.swift */; };
 		F9A76D3E2915356B006636D2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A76D3D2915356B006636D2 /* AppDelegate.swift */; };
 		F9A76D402915356B006636D2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A76D3F2915356B006636D2 /* SceneDelegate.swift */; };
 		F9A76D422915356B006636D2 /* GenresViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A76D412915356B006636D2 /* GenresViewController.swift */; };
@@ -69,6 +71,8 @@
 		E5D89E65291E89390087D932 /* GenresViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenresViewModel.swift; sourceTree = "<group>"; };
 		E5D89E67291FC9FB0087D932 /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
 		E5D89E69292152CD0087D932 /* UINavigationBar+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationBar+Extension.swift"; sourceTree = "<group>"; };
+		E5D89E6C292244040087D932 /* InfoAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoAlert.swift; sourceTree = "<group>"; };
+		E5D89E6E29227C1E0087D932 /* MoviesListsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesListsView.swift; sourceTree = "<group>"; };
 		F9A76D3A2915356B006636D2 /* MovieBrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieBrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9A76D3D2915356B006636D2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F9A76D3F2915356B006636D2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -122,6 +126,7 @@
 				E51563D2291ACCAF00F723BE /* MoviesTableViewHandler.swift */,
 				E5895440291D476000E613B4 /* MovieCellViewModel.swift */,
 				E5D89E63291E7BF90087D932 /* MovieSceneConfigurator.swift */,
+				E5D89E6E29227C1E0087D932 /* MoviesListsView.swift */,
 			);
 			path = MoviesScreen;
 			sourceTree = "<group>";
@@ -129,6 +134,7 @@
 		E51563C7291AC0D200F723BE /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				E5D89E6B292243F70087D932 /* Alert */,
 				E5D89E5D291E75EC0087D932 /* Factory */,
 				E51563D5291BA45D00F723BE /* Extension */,
 				E51563D4291ACE0100F723BE /* TableView */,
@@ -162,6 +168,14 @@
 				E5D89E5E291E76010087D932 /* SceneFactory.swift */,
 			);
 			path = Factory;
+			sourceTree = "<group>";
+		};
+		E5D89E6B292243F70087D932 /* Alert */ = {
+			isa = PBXGroup;
+			children = (
+				E5D89E6C292244040087D932 /* InfoAlert.swift */,
+			);
+			path = Alert;
 			sourceTree = "<group>";
 		};
 		F9A76D312915356B006636D2 = {
@@ -355,11 +369,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				E51563C4291ABDC600F723BE /* MovieCell.swift in Sources */,
+				E5D89E6F29227C1E0087D932 /* MoviesListsView.swift in Sources */,
 				E51563D7291BA4AB00F723BE /* String+Extension.swift in Sources */,
 				F9CDCEA529155DF9005D9847 /* Genre.swift in Sources */,
 				E589543D291D3ED800E613B4 /* ImageDownloader.swift in Sources */,
 				E5D89E66291E89390087D932 /* GenresViewModel.swift in Sources */,
 				E51563C2291AA7F200F723BE /* Movie.swift in Sources */,
+				E5D89E6D292244040087D932 /* InfoAlert.swift in Sources */,
 				F9A76D422915356B006636D2 /* GenresViewController.swift in Sources */,
 				F9A76D3E2915356B006636D2 /* AppDelegate.swift in Sources */,
 				F9CDCE9C29155CC8005D9847 /* ApiManager.swift in Sources */,

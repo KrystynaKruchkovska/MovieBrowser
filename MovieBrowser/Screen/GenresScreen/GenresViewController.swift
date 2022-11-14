@@ -13,9 +13,10 @@ final class GenresViewController: UIViewController {
         static let title = "Genres"
     }
 
-    var viewModel: GenresViewModel?
+    var viewModel: GenresViewModelProtocol?
     private var genres = [Genre]()
     private let activityIndicator = UIActivityIndicatorView()
+    private let infoAlert = DefaultInfoAlert()
 
     private var tableView: UITableView = {
         let tableView = UITableView(frame: .zero)
@@ -24,7 +25,6 @@ final class GenresViewController: UIViewController {
     }()
     
 
-    
     override func loadView() {
         super.loadView()
         self.view = tableView
@@ -36,7 +36,12 @@ final class GenresViewController: UIViewController {
         getGenres()
         setupViewModel()
     }
-
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+    }
+    
     private func prepareUI() {
         prepareRootView()
         prepareTableView()
@@ -76,11 +81,14 @@ final class GenresViewController: UIViewController {
 }
 
 extension GenresViewController {
-    func setupViewModel() {
-        viewModel?.didFetchGeners = { [weak self] generes in
-                self?.genres = generes
-                self?.tableView.reloadData()
-                self?.activityIndicator.stopAnimating()
+    private func setupViewModel() {
+        viewModel?.didFetchGeners = { [unowned self] generes in
+                self.genres = generes
+                self.tableView.reloadData()
+                self.activityIndicator.stopAnimating()
+        }
+        viewModel?.onError = { [unowned self] error in
+            infoAlert.show(on: self, message: error.localizedDescription, acceptanceCompletion: nil)
         }
     }
 }

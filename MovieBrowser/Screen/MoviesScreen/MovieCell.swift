@@ -53,7 +53,7 @@ final class MovieCell: UITableViewCell {
     private var releaseYearLabel: UILabel = {
         let label = UILabel()
         label.textColor = UIColor(named: Colors.defaultGray.rawValue)
-        label.font = UIFont.systemFont(ofSize: 11)
+        label.font = UIFont.systemFont(ofSize: 11, weight: .semibold)
         
         return label
     }()
@@ -101,7 +101,7 @@ final class MovieCell: UITableViewCell {
     private var durationInfo: UILabel = {
         let label = UILabel()
         label.textColor = UIColor(named: Colors.defaultGray.rawValue)
-        label.font = UIFont.systemFont(ofSize: 11)
+        label.font = UIFont.systemFont(ofSize: 11, weight: .semibold)
         return label
     }()
     

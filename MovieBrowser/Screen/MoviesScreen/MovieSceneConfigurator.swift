@@ -36,7 +36,7 @@ final class MovieSceneConfigurator: SceneConfigurator {
         let viewModel: MoviesViewModelProtocol = MoviesViewModel(imageDownloader: imageDownloader, pageLoader: pageLoader, moviesProvider: moviesProvider, detailsProvider: movieDetailsProvider, currentGenreID: genre.id)
         vc.viewModel = viewModel
         vc.title = genre.name
-        
+
         return vc as! T
 
     }

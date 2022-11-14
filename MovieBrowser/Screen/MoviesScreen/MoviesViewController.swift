@@ -10,49 +10,51 @@ import UIKit
 final class MoviesViewController: UIViewController {
     
     var viewModel: MoviesViewModelProtocol?
-    private let moviesTableViewHandler: MoviesTableViewHandler
     
-    private var tableView: UITableView = {
-        let tableView = UITableView(frame: .zero)
-        tableView.separatorStyle = .none
-        tableView.register(MovieCell.self, forCellReuseIdentifier: MovieCell.identifier)
-        return tableView
-    }()
+    private lazy var moviesTableViewHandler: MoviesTableViewHandler = MoviesTableViewHandler(tableView: customView.tableView, cellReuseIdentifier: MovieCell.identifier)
+    
+    private let infoAlert: DefaultInfoAlert = DefaultInfoAlert()
+
+    private var customView: MoviesListView {
+        return view as! MoviesListView
+    }
     
     override func loadView() {
-        self.view = tableView
-    }
-
-    init() {
-        self.moviesTableViewHandler = MoviesTableViewHandler(tableView: self.tableView, cellReuseIdentifier: MovieCell.identifier)
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.loadView()
+        self.view = MoviesListView()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel?.getMovies()
         setupTableView()
         setupViewModel()
+        getMovies()
     }
     
+    private func getMovies() {
+        viewModel?.getMovies()
+        customView.progressIndicator.startAnimating()
+   
+    }
 }
 
 extension MoviesViewController {
     private func setupTableView(){
-        tableView.delegate = moviesTableViewHandler
-        tableView.dataSource = moviesTableViewHandler.makeDataSource()
+        customView.tableView.delegate = moviesTableViewHandler
+        customView.tableView.dataSource = moviesTableViewHandler.makeDataSource()
     }
 
     private func setupViewModel() {
-        viewModel?.didFetchMovies = { [weak self] movies in
+        viewModel?.didFetchMovie = { [weak self] movies in
             self?.moviesTableViewHandler.add([movies])
+            self?.customView.progressIndicator.stopAnimating()
+        }
+        viewModel?.onError = { [unowned self] error in
+            infoAlert.show(on: self, message: error.localizedDescription, acceptanceCompletion: nil)
+
         }
         moviesTableViewHandler.fetchMovies = { [weak self] in
-            self?.viewModel?.getMovies()
+            self?.getMovies()
         }
     }
 }

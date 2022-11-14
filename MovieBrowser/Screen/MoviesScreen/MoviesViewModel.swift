@@ -3,29 +3,33 @@
 //  MovieBrowser
 //
 //  Created by Krystyna Kruchkovska on 08/11/2022.
-//  
+//
 //
 
 
 import Foundation
 
 protocol MoviesViewModelProtocol: AnyObject {
-    var didFetchMovies: ( (MovieCellViewModel) -> Void )? { get set }
+    var didFetchMovie: ( (MovieCellViewModel) -> Void )? { get set }
+    var onError: ((Error) -> Void)? { get set }
     func getMovies()
+    var requestInProgress: Bool { get }
+
 }
 
-class MoviesViewModel: MoviesViewModelProtocol {
+final class MoviesViewModel: MoviesViewModelProtocol {
     private var currentGenre: String
     private let apiManager = ApiManager()
     private var moviesProvider: MoviesProviderProtocol
     private var movieDetailsProvider: MovieDetailsProtocol
     private var imageDownloader: ImageDownloader
     private var pageLoader: PageLoader
-    private var requestInProgress: Bool
+    private(set) var requestInProgress: Bool
     
     
     // Outputs
-    var didFetchMovies: ( (MovieCellViewModel) -> Void )?
+    var didFetchMovie: ( (MovieCellViewModel) -> Void )?
+    var onError: ((Error) -> Void)?
     
     init(imageDownloader: ImageDownloader,
          pageLoader: PageLoader,
@@ -42,53 +46,51 @@ class MoviesViewModel: MoviesViewModelProtocol {
     }
     
     func getMovies() {
-        if self.requestInProgress {
-            return
-        }
-        self.requestInProgress = true
-
-        DispatchQueue.global(qos: .userInteractive).async { [self] in
+        let serialQueue = DispatchQueue(label: "serial.queue")
+        serialQueue.sync { [self] in
+            
+            print("REQUEST requestInProgress \(requestInProgress)")
+            if self.requestInProgress {
+                return
+            }
+            
+            self.requestInProgress = true
             getMoviesBaseInfo { result in
-                
-                let group = DispatchGroup()
-                
                 if case .failure(let error) = result {
-                    print("Error: \(error)")
+                    DispatchQueue.main.async {
+                        self.onError?(error)
+                    }
                 }
                 if case .success(let moviesWithBaseInfo) = result {
-                    
-                    moviesWithBaseInfo.forEach { movieInfo in
-                        let movieId = movieInfo.id
-                        group.enter()
-            
-                        self.movieDetailsProvider.getDetails(for: movieId) { [weak self] result in
-                            guard let self = self else {
-                                group.leave()
-                                return
-                            }
-                            
-                            if case .failure(let error) = result {
-                                print("Error: \(error)")
-                            }
-                            
-                            if case .success(let details) = result {
-                                if self.pageLoader.current < self.pageLoader.itemsLimit {
-                                    self.pageLoader.current += 1
-                                    
-                                    let movie = MovieCellViewModel(baseMovieInfo: movieInfo, details: details, imageDownloader: self.imageDownloader)
-                                    
+                    let serialQueue2 = DispatchQueue(label: "serial.queue2")
+                    serialQueue2.sync {
+                        var current = 0
+                        moviesWithBaseInfo.forEach { movieInfo in
+                            print("|||")
+                            let movieId = movieInfo.id
+                              current += 1
+
+                            self.movieDetailsProvider.getDetails(for: movieId) { [unowned self] result in
+
+                                if case .failure(let error) = result {
                                     DispatchQueue.main.async {
-                                        self.didFetchMovies?(movie)
+                                        self.onError?(error)
+                                    }
+                                }
+                                
+                                if case .success(let details) = result {
+                                    DispatchQueue.main.async {
+                                        if current < self.pageLoader.itemsLimit {
+                                            self.publishMovie(with: movieInfo, details: details)
+                                        }
                                     }
                                 }
                             }
-                            group.leave()
                         }
+                        print("AFTER |||")
+                        self.requestInProgress = false
                     }
                 }
-                group.wait()
-                
-                self.requestInProgress = false
             }
         }
     }
@@ -101,6 +103,8 @@ class MoviesViewModel: MoviesViewModelProtocol {
         }
         
         moviesProvider.discoverMovies(page: page, for: self.currentGenre) { result in
+            self.requestInProgress = false
+
             if case .failure(let error) = result {
                 completion(.failure(error))
             }
@@ -111,15 +115,25 @@ class MoviesViewModel: MoviesViewModelProtocol {
             }
         }
     }
+    
+    private func publishMovie(with movieInfo: MovieInfo, details: MovieDetails) {
+
+        let movie = MovieCellViewModel(baseMovieInfo: movieInfo, details: details, imageDownloader: imageDownloader)
+        
+        self.didFetchMovie?(movie)
+    }
 }
 
 class PageLoader {
     let itemsPerRequest = 20
-    var current: Int = 0
+//    var current: Int = 0
     var itemsLimit: Int
-    
+    var lastLoadedPage: Int = 0
     var pageToLoad: Int? {
-        return culculatePageForLoad()
+        let result = culculatePageForLoad()
+        print("PAGE to load \(String(describing: result))")
+        print("Thread\(Thread.current)")
+        return result
     }
     
     init(itemsLimit: Int) {
@@ -127,10 +141,12 @@ class PageLoader {
     }
     
     private func culculatePageForLoad() -> Int? {
-        if current == itemsLimit {
+//        print("Current \(current)")
+        if (lastLoadedPage * itemsPerRequest) > itemsLimit  {
             return nil
         }
-        return (current / itemsPerRequest) + 1
+        lastLoadedPage = lastLoadedPage + 1
+        return lastLoadedPage
     }
     
 }
