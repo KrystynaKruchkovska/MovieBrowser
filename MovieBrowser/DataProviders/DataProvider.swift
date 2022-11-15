@@ -17,7 +17,7 @@ protocol MoviesProviderProtocol {
 }
 
 protocol MovieDetailsProtocol {
-    func getDetails(for movieId: Int, completion: @escaping (Result< MovieDetails, Error>) -> Void)
+    func getDetails(for movieId: Int, completion: @escaping (Result<MovieDetails, Error>) -> Void)
 }
 
 protocol ImageProviderProtocol {
@@ -80,7 +80,7 @@ extension DataProvider: MovieDetailsProtocol {
 
 extension DataProvider: ImageProviderProtocol {
     func getImageData(for imagePath: String, completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionDataTask {
-        var task = apiManager.makeRequest(request: TheMovieDBEndpoint.poster(path: imagePath)) { result in
+        let task = apiManager.makeRequest(request: TheMovieDBEndpoint.poster(path: imagePath)) { result in
             switch result {
             case let .success(data):
                 completion(.success(data))

@@ -28,6 +28,7 @@
 		E5D89E6A292152CD0087D932 /* UINavigationBar+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5D89E69292152CD0087D932 /* UINavigationBar+Extension.swift */; };
 		E5D89E6D292244040087D932 /* InfoAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5D89E6C292244040087D932 /* InfoAlert.swift */; };
 		E5D89E6F29227C1E0087D932 /* MoviesListsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5D89E6E29227C1E0087D932 /* MoviesListsView.swift */; };
+		E5D89E71292373080087D932 /* GenresListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5D89E70292373080087D932 /* GenresListView.swift */; };
 		F9A76D3E2915356B006636D2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A76D3D2915356B006636D2 /* AppDelegate.swift */; };
 		F9A76D402915356B006636D2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A76D3F2915356B006636D2 /* SceneDelegate.swift */; };
 		F9A76D422915356B006636D2 /* GenresViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A76D412915356B006636D2 /* GenresViewController.swift */; };
@@ -73,6 +74,7 @@
 		E5D89E69292152CD0087D932 /* UINavigationBar+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationBar+Extension.swift"; sourceTree = "<group>"; };
 		E5D89E6C292244040087D932 /* InfoAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoAlert.swift; sourceTree = "<group>"; };
 		E5D89E6E29227C1E0087D932 /* MoviesListsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesListsView.swift; sourceTree = "<group>"; };
+		E5D89E70292373080087D932 /* GenresListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenresListView.swift; sourceTree = "<group>"; };
 		F9A76D3A2915356B006636D2 /* MovieBrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieBrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9A76D3D2915356B006636D2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F9A76D3F2915356B006636D2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 			isa = PBXGroup;
 			children = (
 				F9A76D412915356B006636D2 /* GenresViewController.swift */,
+				E5D89E70292373080087D932 /* GenresListView.swift */,
 				E5D89E60291E787C0087D932 /* GenresConfigurator.swift */,
 				E5D89E65291E89390087D932 /* GenresViewModel.swift */,
 			);
@@ -121,12 +124,12 @@
 			isa = PBXGroup;
 			children = (
 				F9CDCE9D29155D17005D9847 /* MoviesViewController.swift */,
+				E5D89E6E29227C1E0087D932 /* MoviesListsView.swift */,
 				E51563C3291ABDC600F723BE /* MovieCell.swift */,
 				E51563BD291A9C4700F723BE /* MoviesViewModel.swift */,
-				E51563D2291ACCAF00F723BE /* MoviesTableViewHandler.swift */,
 				E5895440291D476000E613B4 /* MovieCellViewModel.swift */,
+				E51563D2291ACCAF00F723BE /* MoviesTableViewHandler.swift */,
 				E5D89E63291E7BF90087D932 /* MovieSceneConfigurator.swift */,
-				E5D89E6E29227C1E0087D932 /* MoviesListsView.swift */,
 			);
 			path = MoviesScreen;
 			sourceTree = "<group>";
@@ -394,6 +397,7 @@
 				E5D89E5F291E76010087D932 /* SceneFactory.swift in Sources */,
 				E589543F291D3FCF00E613B4 /* ImageCache.swift in Sources */,
 				E5D89E6A292152CD0087D932 /* UINavigationBar+Extension.swift in Sources */,
+				E5D89E71292373080087D932 /* GenresListView.swift in Sources */,
 				E51563CF291AC92700F723BE /* TableViewDiffableDataSourceViewModel.swift in Sources */,
 				E51563D3291ACCAF00F723BE /* MoviesTableViewHandler.swift in Sources */,
 				E51563C6291ABE4200F723BE /* ProvidableProtocol.swift in Sources */,
@@ -556,6 +560,7 @@
 				INFOPLIST_FILE = MovieBrowser/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -583,6 +588,7 @@
 				INFOPLIST_FILE = MovieBrowser/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (

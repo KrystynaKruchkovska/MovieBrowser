@@ -20,8 +20,8 @@ final class MovieBrowserTests: XCTestCase {
 
     func testCulculateMovieDuration() throws {
         
-        let testCases = [127, 10, 0, -50, 20_000]
-        let expectedResults = ["2h 7m","10m","0m", "0m", "333h 20m"]
+        let testCases = [127, 10, 0, -50, 20_000, 100]
+        let expectedResults = ["2h 7m","10m","0m", "0m", "333h 20m", "1h 40m"]
         
     
         for i in 0...testCases.count-1 {

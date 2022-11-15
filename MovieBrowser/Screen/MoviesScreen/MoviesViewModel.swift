@@ -9,12 +9,10 @@
 
 import Foundation
 
-protocol MoviesViewModelProtocol: AnyObject {
+protocol MoviesViewModelProtocol {
     var didFetchMovie: ( (MovieCellViewModel) -> Void )? { get set }
     var onError: ((Error) -> Void)? { get set }
     func getMovies(completion: @escaping ()->())
-    var requestInProgress: Bool { get }
-    
 }
 
 final class MoviesViewModel: MoviesViewModelProtocol {
@@ -24,7 +22,7 @@ final class MoviesViewModel: MoviesViewModelProtocol {
     private var movieDetailsProvider: MovieDetailsProtocol
     private var imageDownloader: ImageDownloader
     private var pageLoader: PageLoader
-    private(set) var requestInProgress: Bool
+    private var requestInProgress: Bool
     
     
     // Outputs
@@ -44,7 +42,7 @@ final class MoviesViewModel: MoviesViewModelProtocol {
         self.currentGenre = String(currentGenreID)
         self.requestInProgress = false
     }
-    
+        
     func getMovies(completion: @escaping ()->()) {
         if self.requestInProgress {
             completion()
@@ -66,43 +64,45 @@ final class MoviesViewModel: MoviesViewModelProtocol {
                 }
             }
             if case .success(let moviesWithBaseInfo) = result {
-                var current = 0
-                moviesWithBaseInfo.forEach { movieInfo in
-                    let movieId = movieInfo.id
-                    current += 1
-                    
-                    self.movieDetailsProvider.getDetails(for: movieId) { [weak self] result in
-                        
-                        guard let self = self else {
-                            completion()
-                            return
-                        }
-                        if case .failure(let error) = result {
-                            DispatchQueue.main.async {
-                                self.onError?(error)
-                            }
-                        }
-                        
-                        if case .success(let details) = result {
-                            DispatchQueue.main.async {
-                                if current < self.pageLoader.itemsLimit {
-                                    self.publishMovie(with: movieInfo, details: details)
-                                }
-                            }
-                        }
-                    }
-                }
+                self.publishUniqueMovies(moviesWithBaseInfo)
                 completion()
                 self.requestInProgress = false
             }
         }
     }
     
-    private func getMoviesBaseInfo(for page: Int, completion: @escaping (Result< [MovieInfo], Error>) -> Void) {
-        var moviesWithBaseInfo = [MovieInfo]()
-        
-        
-        
+    private func publishUniqueMovies(_ moviesWithBaseInfo: [BaseMovieInfo]) {
+        var movieIds = Set<Int>()
+        moviesWithBaseInfo.forEach { movieInfo in
+            let movieId = movieInfo.id
+            if !(movieIds.contains(movieId)) {
+                movieIds.insert(movieId)
+                self.movieDetailsProvider.getDetails(for: movieId) { [weak self] result in
+                    
+                    guard let self = self else {
+                        return
+                    }
+                    if case .failure(let error) = result {
+                        DispatchQueue.main.async {
+                            self.onError?(error)
+                        }
+                    }
+                    
+                    if case .success(let details) = result {
+                        DispatchQueue.main.async {
+                            if movieIds.count < self.pageLoader.itemsLimit {
+                                self.publishMovie(with: movieInfo, details: details)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    
+    private func getMoviesBaseInfo(for page: Int, completion: @escaping (Result<[BaseMovieInfo], Error>) -> Void) {
+        var moviesWithBaseInfo = [BaseMovieInfo]()
         moviesProvider.discoverMovies(page: page, for: self.currentGenre) { result in
             self.requestInProgress = false
             
@@ -117,21 +117,21 @@ final class MoviesViewModel: MoviesViewModelProtocol {
         }
     }
     
-    private func publishMovie(with movieInfo: MovieInfo, details: MovieDetails) {
+    private func publishMovie(with movieInfo: BaseMovieInfo, details: MovieDetails) {
         
         let movie = MovieCellViewModel(baseMovieInfo: movieInfo, details: details, imageDownloader: imageDownloader)
-        
+
         self.didFetchMovie?(movie)
     }
 }
 
-class PageLoader {
-    let itemsPerRequest = 20
+final class PageLoader {
+    private let itemsPerRequest = 20
+    private var lastLoadedPage: Int = 0
+    
     var itemsLimit: Int
-    var lastLoadedPage: Int = 0
     var pageToLoad: Int? {
-        let result = culculatePageForLoad()
-        return result
+        return culculatePageForLoad()
     }
     
     init(itemsLimit: Int) {

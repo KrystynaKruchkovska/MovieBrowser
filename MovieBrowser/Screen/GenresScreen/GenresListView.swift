@@ -1,26 +1,25 @@
 //
-//  MoviesListsView.swift
+//  GenresListView.swift
 //  MovieBrowser
 //
-//  Created by Krystyna Kruchkovska on 14/11/2022.
+//  Created by Krystyna Kruchkovska on 15/11/2022.
 //  
 //
 
 
 import UIKit
 
-final class MoviesListView: UIView {
+final class GenresListView: UIView {
+    let cellId = "GenresCell"
     
-    var tableView: UITableView = {
+    lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero)
-        tableView.separatorStyle = .none
-        tableView.register(MovieCell.self, forCellReuseIdentifier: MovieCell.identifier)
-        tableView.allowsSelection = false
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
     
-    let progressIndicator: UIActivityIndicatorView = {
+    let activityIndicator: UIActivityIndicatorView = {
         let activityIndicatorView = UIActivityIndicatorView()
         activityIndicatorView.color = .darkGray
         activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
@@ -39,7 +38,7 @@ final class MoviesListView: UIView {
     }
 }
 
-private extension MoviesListView {
+private extension GenresListView {
 
         func setupView() {
             setupSubviews()
@@ -48,7 +47,7 @@ private extension MoviesListView {
 
         func setupSubviews() {
             addSubview(tableView)
-            addSubview(progressIndicator)
+            addSubview(activityIndicator)
         }
 
         func setupConstraints() {
@@ -58,9 +57,10 @@ private extension MoviesListView {
                     tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
                     tableView.topAnchor.constraint(equalTo: topAnchor),
                     tableView.bottomAnchor.constraint(equalTo: bottomAnchor),
-                    progressIndicator.centerXAnchor.constraint(equalTo: centerXAnchor),
-                    progressIndicator.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -20),
+                    activityIndicator.centerXAnchor.constraint(equalTo: centerXAnchor),
+                    activityIndicator.centerYAnchor.constraint(equalTo: centerYAnchor)
                 ]
             )
         }
 }
+

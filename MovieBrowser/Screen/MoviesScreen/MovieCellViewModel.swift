@@ -25,7 +25,7 @@ struct MovieCellViewModel {
 
 extension MovieCellViewModel {
     
-    init(baseMovieInfo: MovieInfo,
+    init(baseMovieInfo: BaseMovieInfo,
          details: MovieDetails,
          imageDownloader: ImageDownloader) {
         self.id = baseMovieInfo.id
@@ -47,7 +47,7 @@ extension MovieCellViewModel {
         }
         let hours: Int = runtime / 60
         let mins = runtime - (hours * 60)
-        return hours > 1 ? "\(hours)h \(mins)m" : "\(mins)m"
+        return hours > 0 ? "\(hours)h \(mins)m" : "\(mins)m"
     }
     
     func getPosterImage(completion: @escaping (UIImage?) -> ()) -> UUID? {

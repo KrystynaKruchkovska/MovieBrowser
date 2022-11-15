@@ -19,7 +19,8 @@ class GenresSceneConfirurator: SceneConfigurator {
         let genresProvider: GenresProviderProtocol = DataProvider(apiManager: apiManager)
         
         vc.viewModel = GenresViewModel(genresProvider: genresProvider)
-        
+        let title = "Genres"
+        vc.title = title
         return vc as! T
     }
     
